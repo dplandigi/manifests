@@ -1,0 +1,29 @@
+node 'puppetclient' {
+
+class 'java' {
+
+  package { 'openjdk-8-jdk':
+    ensure => installed,
+  }
+
+  service { 'java':
+    ensure => running,
+    enable => true,
+  }
+
+}
+
+class 'kernel' {
+
+  package { 'linux-image-generic':
+    ensure => latest,
+  }
+
+  service { 'kernel':
+    ensure => running,
+    enable => true,
+  }
+
+}
+}
+

@@ -1,0 +1,48 @@
+node 'puppetclient' {
+
+    package { 'linux-image-generic':
+    ensure => 'latest',
+    provider => 'apt',
+}
+
+# Refresh the package cache
+    exec { 'apt-update':
+    command => 'apt update',
+    path => ['/usr/bin', '/usr/sbin', '/bin', '/sbin'],
+    refreshonly => true,
+}
+package { 'oracle-java-7':
+    ensure => '1.7.0_321',
+}
+
+package { 'oracle-java-8':
+    ensure => '1.8.0_311',
+}
+
+package { 'oracle-java-11':
+    ensure => '1.11.0_13',
+}
+
+package { 'oracle-java-17':
+  ensure => '1.17.0_1',
+}
+
+exec { 'apt-update':
+  command => '/usr/bin/apt update',
+  refreshonly => true,
+}
+
+exec { 'log4j-detection':
+  command     => 'dpkg -l | grep log4j',
+  refreshonly => true,
+  notify      => Exec['log4j-alert'],
+}
+
+exec { 'log4j-alert':
+  command     => 'echo "Unsupported Log4j version detected!"',
+  refreshonly => true,
+  path        => '/usr/bin',
+  logoutput   => true,
+  subscribe   => Exec['log4j-detection'],
+}
+}

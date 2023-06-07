@@ -1,0 +1,27 @@
+node 'puppetclient' {
+
+exec { 'apt-update':
+    command     => '/usr/bin/apt update',
+    refreshonly => true,
+  }
+
+  # Packages for Linux kernel vulnerabilities
+  package { 'linux-image-generic':
+    ensure => 'latest',
+    path => ['/usr/bin', '/usr/sbin', '/bin', '/sbin'],
+    require => Exec['apt-update'],
+  }
+
+  # Packages for Apache Log4j vulnerability
+  package { 'apache-log4j':
+    ensure => 'latest',
+    require => Exec['apt-update'],
+  }
+
+  # Packages for Oracle Java SE vulnerabilities
+  package { 'oracle-java-se':
+    ensure => 'latest',
+    require => Exec['apt-update'],
+  }
+
+}
